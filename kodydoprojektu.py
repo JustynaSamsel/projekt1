@@ -4,6 +4,12 @@ Created on Tue Mar 22 13:30:09 2022
 
 @author: Justyna
 """
+
+
+
+# tralalal - zmieniam sobie cos tam
+
+
 # klasa -- parametry
 import numpy as np
 import math
