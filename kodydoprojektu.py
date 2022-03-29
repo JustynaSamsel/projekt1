@@ -9,7 +9,7 @@ Created on Tue Mar 22 13:30:09 2022
 
 # tralalal - zmieniam sobie cos tam
 
-x= 222200220
+x= 222200220222
 # klasa -- parametry
 import numpy as np
 import math
