@@ -251,17 +251,28 @@ class Transformacje:
     
     
     
-    # 7)odleglosc 2D i 3D
-    def odleglosc_2D(self, A,B):
+    # 7) odleglosc 2D i 3D
+    def odleglosc_2D_3D(self, A,B):
+        """
+        Funkcja wyznacza odległość 2D oraz 3D.
+        
+        INPUT:
+            A   :[list] : lista współrzędnych punktu
+            B   :[list] : lista współrzędnych punktu
+            
+        OUTPUT:
+            d_2D :[float] : odległość 2D [metry]
+            d_3D :[float] : odległość 3D [metry]
+        """
         dX = A[0] - B[0]
         dY = A[1] - B[1]
         dZ = A[2] - B[2]
         
         d_2D = sqrt((dX**2) + (dY**2))
-        print('Odleglosc 2D =', d)
+        print('Odleglosc 2D =', d_2D)
     
         d_3D = sqrt((dX**2) + (dY**2) + (dZ**2))
-        print('Odleglosc 3D =', d)
+        print('Odleglosc 3D =', d_3D)
         
         return (d_2D, d_3D)
     
@@ -269,7 +280,8 @@ class Transformacje:
 
 
 
-
+A = [ 34, 432,42]
+B = [378,239,313]
 
 X = 3664940.500
 Y = 1409153.590
@@ -279,6 +291,9 @@ Y0 = 14555153.590
 Z0 = 50555571.170
 # TEST
 obiekt = Transformacje(model = "grs80")
+
+d11, d1 = obiekt.odleglosc_2D(A, B)
+print(d1)
 
 fi, lam, h = obiekt.hirvonen(X,Y,Z)
 X1, Y1, Z1 = obiekt.geodezyjne2XYZ(fi, lam, h)
