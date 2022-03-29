@@ -37,7 +37,7 @@ class Transformacje:
     def hirvonen (self, X, Y, Z):
             """
             Algorytm Hirvonena - służy do transformacji współrzędnych 
-            geocentrycznych  (X,Y,Z) na współrzędne geodezyjne (fi, lam, h).
+            geocentrycznych  (X,Y,Z) na współrzędne geodezyjne (fi,lam,h).
            
             INPUT:
                 X  :[float] : współrzędna X ortokartezjańska
@@ -45,9 +45,9 @@ class Transformacje:
                 Z  :[float] : współrzędna Z ortokartezjańska
         
             OUTPUT:
-                fi :[float] : szerokość geodezyjna (radiany)
-                la :[float] : długość geodezyjna (radiany)
-                h  :[float] : wysokość elipsoidalna (metry)
+                fi :[float] : szerokość geodezyjna [radiany]
+                la :[float] : długość geodezyjna [radiany]
+                h  :[float] : wysokość elipsoidalna [metry]
                 """
             r = math.sqrt(X**2 + Y**2)
             print(r)
@@ -67,6 +67,21 @@ class Transformacje:
     
     # 2)geodezyjne (fi, lam, h) --> geocentryczne(XYZ)
     def geodezyjne2XYZ(self,fi, lam, h):
+        """
+        Algorytm służy do transformacji współrzędnych geodezyjnych (fi,lam,h)
+        na współrzędne geocentrycze (X,Y,Z).
+       
+        INPUT:
+            fi :[float] : szerokość geodezyjna [radiany]
+            la :[float] : długość geodezyjna [radiany]
+            h  :[float] : wysokość elipsoidalna [metry]
+    
+        OUTPUT:
+            X  :[float] : współrzędna X ortokartezjańska
+            Y  :[float] : współrzędna Y ortokartezjańska
+            Z  :[float] : współrzędna Z ortokartezjańska
+    
+        """
         N = self.a/math.sqrt(1-self.e2*math.sin(fi)**2)
         X = (N + h) * math.cos(fi) * math.cos(lam)
         Y = (N + h) * math.cos(fi) * math.sin(lam)
@@ -76,7 +91,23 @@ class Transformacje:
     
     #3)topocentryczne (ENU)
     def neu(self, X, Y, Z, X_sr, Y_sr, Z_sr):
-        
+        """
+        Funkcja wyznacza współrzędne topocentryczne (E,N,U).
+    
+        INPUT:
+            X    :[float] : współrzędna X punktu 
+            Y    :[float] : współrzędna Y punktu
+            Z    :[float] : współrzędna Z punktu 
+            X_sr :[float] : współrzędna referencyjna X
+            Y_sr :[float] : współrzędna referencyjna Y
+            Z_sr :[float] : współrzędna referencyjna Z
+    
+        OUTPUT:
+             neu :[list] : wektor złożony z 3 elementów, zwraca współrzędne topocentryczne: n, e, u
+             n   :[float]: współrzędna topocentryczna n
+             e   :[float]: współrzędna topocentryczna e
+             u   :[float]: współrzędna topocentryczna u
+        """
         fi, lam, h = self.hirvonen(X, Y, Z)
         
         delta_X = X - X_sr
@@ -140,8 +171,7 @@ class Transformacje:
         return(x00, y00)
     
     
-    # 5)
-    # geodezyjne --> UKLAD 1992
+    # 5) geodezyjne --> UKLAD 1992
     def u1992(self, fi, lam):
         m_0 = 0.9993
         N = self.a/(np.sqrt(1-self.e2 * np.sin(fi)**2))
@@ -169,25 +199,24 @@ class Transformacje:
     
     
     # 6) kat azymutu i kat elewacji
-
     def azymut_elewacja(self, X0, Y0, Z0, X, Y, Z):
-        n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
+        neu,n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
         
         hz = math.sqrt(e**2 + n**2)
         el = math.sqrt(e**2 + n**2 + u**2)
-        azymut = np.atan(e,n)
-        elewacja = np.atan2(u, hz)
+        azymut = math.atan2(e,n)
+        elewacja = math.atan2(u,hz)
         
         if azymut < 0:
             azymut += 2 * math.pi
+            
         return(hz, el, azymut, elewacja)
     
     
     
     
-    # 7)
-    # odleglosc 2D i 3D
-    def odleglosc_2D(A,B):
+    # 7)odleglosc 2D i 3D
+    def odleglosc_2D(self, A,B):
         dX = A[0] - B[0]
         dY = A[1] - B[1]
         d = sqrt((dX**2) + (dY**2))
@@ -195,8 +224,7 @@ class Transformacje:
         return (d)
     
     
-    
-    def odleglosc_3D(A,B):
+    def odleglosc_3D(self,A,B):
         dX = A[0] - B[0]
         dY = A[1] - B[1]
         dZ = A[2] - B[2]
@@ -213,7 +241,9 @@ class Transformacje:
 X = 3664940.500
 Y = 1409153.590
 Z = 5009571.170
-
+X0 = 36655540.500
+Y0 = 14555153.590
+Z0 = 50555571.170
 # TEST
 obiekt = Transformacje(model = "grs80")
 
@@ -225,5 +255,8 @@ print(X1,Y1,Z1)
 X0, Y0 = obiekt.u2000(fi, lam)
 print(X0,Y0)
 
+neu, n,e,u = obiekt.neu(X, Y, Z, X0, Y0, Z0)
+print(neu)
 
-# = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
+hz, el, azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
+print(math.degrees(azymut),math.degrees(elewacja))
