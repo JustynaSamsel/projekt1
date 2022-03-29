@@ -32,8 +32,7 @@ class Transformacje:
 
     # PROGRAMY DO TRANSFORMACJI
     
-    # 1)
-    # HIRVONEN -- geocentryncze(XYZ) --> geodezyjne (fi, lam, h)
+    # 1) HIRVONEN -- geocentryncze(XYZ) --> geodezyjne (fi,lam,h)
     def hirvonen (self, X, Y, Z):
             """
             Algorytm Hirvonena - służy do transformacji współrzędnych 
@@ -46,9 +45,9 @@ class Transformacje:
         
             OUTPUT:
                 fi :[float] : szerokość geodezyjna [radiany]
-                la :[float] : długość geodezyjna [radiany]
+                lam:[float] : długość geodezyjna [radiany]
                 h  :[float] : wysokość elipsoidalna [metry]
-                """
+            """
             r = math.sqrt(X**2 + Y**2)
             print(r)
             fi_n = math.atan(Z/(r*(1-self.e2)))
@@ -65,7 +64,7 @@ class Transformacje:
     
     
     
-    # 2)geodezyjne (fi, lam, h) --> geocentryczne(XYZ)
+    # 2) geodezyjne (fi,lam,h) --> geocentryczne(XYZ)
     def geodezyjne2XYZ(self,fi, lam, h):
         """
         Algorytm służy do transformacji współrzędnych geodezyjnych (fi,lam,h)
@@ -73,7 +72,7 @@ class Transformacje:
        
         INPUT:
             fi :[float] : szerokość geodezyjna [radiany]
-            la :[float] : długość geodezyjna [radiany]
+            lam:[float] : długość geodezyjna [radiany]
             h  :[float] : wysokość elipsoidalna [metry]
     
         OUTPUT:
@@ -89,7 +88,7 @@ class Transformacje:
         return(X, Y, Z)
     
     
-    #3)topocentryczne (ENU)
+    #3) topocentryczne (ENU)
     def neu(self, X, Y, Z, X_sr, Y_sr, Z_sr):
         """
         Funkcja wyznacza współrzędne topocentryczne (E,N,U).
@@ -130,6 +129,17 @@ class Transformacje:
     
     #4) geodezyjne --> UKLAD 2000
     def u2000(self, fi, lam):
+        """
+        Funkcja przelicza współrzędne geodezyjne (fi,lam) na współrzędne w układzie 2000.
+        
+        INPUT:
+            fi    :[float] : szerokość geodezyjna [radiany]
+            lam   :[float] : długość geodezyjna [radiany]
+            
+        OUTPUT:
+            x00   :[float] : współrzędna X w układzie 2000
+            y00   :[float] : współrzędna Y w układzie 2000
+        """
         m = 0.999923
         N = self.a/math.sqrt(1-self.e2*math.sin(fi)**2)
         t = np.tan(fi)
@@ -173,6 +183,17 @@ class Transformacje:
     
     # 5) geodezyjne --> UKLAD 1992
     def u1992(self, fi, lam):
+        """
+        Funkcja przelicza współrzędne geodezyjne (fi,lam) na współrzędne w układzie 1992.
+        
+        INPUT:
+            fi    :[float] : szerokość geodezyjna [radiany]
+            lam   :[float] : długość geodezyjna [radiany]
+            
+        OUTPUT:
+            x92   :[float] : współrzędna X w układzie 1992
+            y92   :[float] : współrzędna Y w układzie 1992
+        """
         m_0 = 0.9993
         N = self.a/(np.sqrt(1-self.e2 * np.sin(fi)**2))
         t = np.tan(fi)
@@ -200,17 +221,32 @@ class Transformacje:
     
     # 6) kat azymutu i kat elewacji
     def azymut_elewacja(self, X0, Y0, Z0, X, Y, Z):
+        """
+        Funkcja wyznacza kąt azymutu oraz kąt elewacji.
+        
+        INPUT:
+            X    :[float] : współrzędna X  
+            Y    :[float] : współrzędna Y 
+            Z    :[float] : współrzędna Z  
+            X_sr :[float] : współrzędna referencyjna X
+            Y_sr :[float] : współrzędna referencyjna Y
+            Z_sr :[float] : współrzędna referencyjna Z
+            
+        OUTPUT:
+            azymut   :[float] : kąt azymutu [radiany]
+            elewacja :[float] : kąt elewacji [radiany]
+        """
         neu,n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
         
-        hz = math.sqrt(e**2 + n**2)
-        el = math.sqrt(e**2 + n**2 + u**2)
+        hz = math.sqrt(e**2 + n**2)  # odleglosc horyzontalna
+        el = math.sqrt(e**2 + n**2 + u**2)  # dlugosc wektora
         azymut = math.atan2(e,n)
         elewacja = math.atan2(u,hz)
         
         if azymut < 0:
             azymut += 2 * math.pi
             
-        return(hz, el, azymut, elewacja)
+        return(azymut, elewacja)
     
     
     
@@ -219,18 +255,15 @@ class Transformacje:
     def odleglosc_2D(self, A,B):
         dX = A[0] - B[0]
         dY = A[1] - B[1]
-        d = sqrt((dX**2) + (dY**2))
-        print('Odleglosc 2D =', d)
-        return (d)
-    
-    
-    def odleglosc_3D(self,A,B):
-        dX = A[0] - B[0]
-        dY = A[1] - B[1]
         dZ = A[2] - B[2]
-        d = sqrt((dX**2) + (dY**2) + (dZ**2))
+        
+        d_2D = sqrt((dX**2) + (dY**2))
+        print('Odleglosc 2D =', d)
+    
+        d_3D = sqrt((dX**2) + (dY**2) + (dZ**2))
         print('Odleglosc 3D =', d)
-        return (d)
+        
+        return (d_2D, d_3D)
     
 
 
@@ -258,5 +291,5 @@ print(X0,Y0)
 neu, n,e,u = obiekt.neu(X, Y, Z, X0, Y0, Z0)
 print(neu)
 
-hz, el, azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
+azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
 print(math.degrees(azymut),math.degrees(elewacja))
