@@ -49,7 +49,7 @@ class Transformacje:
                 h  :[float] : wysokość elipsoidalna [metry]
             """
             r = math.sqrt(X**2 + Y**2)
-            print(r)
+            #print(r)
             fi_n = math.atan(Z/(r*(1-self.e2)))
             eps = 0.000001/3600 *math.pi/180 # radiany
             fi = fi_n*2
@@ -89,7 +89,7 @@ class Transformacje:
     
     
     #3) topocentryczne (ENU)
-    def neu(self, X, Y, Z, X_sr, Y_sr, Z_sr):
+    def neu(self, X0, Y0, Z0, X, Y, Z):
         """
         Funkcja wyznacza współrzędne topocentryczne (E,N,U).
     
@@ -97,9 +97,9 @@ class Transformacje:
             X    :[float] : współrzędna X punktu 
             Y    :[float] : współrzędna Y punktu
             Z    :[float] : współrzędna Z punktu 
-            X_sr :[float] : współrzędna referencyjna X
-            Y_sr :[float] : współrzędna referencyjna Y
-            Z_sr :[float] : współrzędna referencyjna Z
+            X0 :[float] : współrzędna referencyjna X
+            Y0 :[float] : współrzędna referencyjna Y
+            Z0 :[float] : współrzędna referencyjna Z
     
         OUTPUT:
              neu :[list] : wektor złożony z 3 elementów, zwraca współrzędne topocentryczne: n, e, u
@@ -109,9 +109,9 @@ class Transformacje:
         """
         fi, lam, h = self.hirvonen(X, Y, Z)
         
-        delta_X = X - X_sr
-        delta_Y = Y - Y_sr    
-        delta_Z = Z - Z_sr
+        delta_X = X - X0
+        delta_Y = Y - Y0    
+        delta_Z = Z - Z0
         
         R = np.matrix([((-np.sin(fi) * np.cos(lam)), (-np.sin(fi) * np.sin(lam)), (np.cos(fi))),
                        ((-np.sin(lam)), (np.cos(lam)), (0)),
@@ -124,7 +124,7 @@ class Transformacje:
         n = neu[0,0]
         e = neu[1,0]
         u = neu[2,0]
-        return(neu, n, e, u)
+        return(n, e, u)
     
     
     #4) geodezyjne --> UKLAD 2000
@@ -197,7 +197,7 @@ class Transformacje:
         m_0 = 0.9993
         N = self.a/(np.sqrt(1-self.e2 * np.sin(fi)**2))
         t = np.tan(fi)
-        e_2 = self.self.e2/(1-self.e2)
+        e_2 = self.e2/(1-self.e2)
         n2 = e_2 * (np.cos(fi))**2
         
         lam_0 = math.radians(19)
@@ -228,15 +228,15 @@ class Transformacje:
             X    :[float] : współrzędna X  
             Y    :[float] : współrzędna Y 
             Z    :[float] : współrzędna Z  
-            X_sr :[float] : współrzędna referencyjna X
-            Y_sr :[float] : współrzędna referencyjna Y
-            Z_sr :[float] : współrzędna referencyjna Z
+            X0 :[float] : współrzędna referencyjna X
+            Y0 :[float] : współrzędna referencyjna Y
+            Z0 :[float] : współrzędna referencyjna Z
             
         OUTPUT:
-            azymut   :[float] : kąt azymutu [radiany]
-            elewacja :[float] : kąt elewacji [radiany]
+            azymut   :[float] : kąt azymutu [stopnie]
+            elewacja :[float] : kąt elewacji [stopnie]
         """
-        neu,n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
+        n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
         
         hz = math.sqrt(e**2 + n**2)  # odleglosc horyzontalna
         el = math.sqrt(e**2 + n**2 + u**2)  # dlugosc wektora
@@ -246,7 +246,7 @@ class Transformacje:
         if azymut < 0:
             azymut += 2 * math.pi
             
-        return(azymut, elewacja)
+        return(math.degrees(azymut), math.degrees(elewacja))
     
     
     
@@ -269,10 +269,10 @@ class Transformacje:
         dZ = A[2] - B[2]
         
         d_2D = sqrt((dX**2) + (dY**2))
-        print('Odleglosc 2D =', d_2D)
+        #print('Odleglosc 2D =', d_2D)
     
         d_3D = sqrt((dX**2) + (dY**2) + (dZ**2))
-        print('Odleglosc 3D =', d_3D)
+        #print('Odleglosc 3D =', d_3D)
         
         return (d_2D, d_3D)
     
@@ -280,31 +280,31 @@ class Transformacje:
 
 
 
-A = [ 34, 432,42]
-B = [378,239,313]
+#A = [ 34, 432,42]
+#B = [378,239,313]
 
-X = 3664940.500
-Y = 1409153.590
-Z = 5009571.170
-X0 = 36655540.500
-Y0 = 14555153.590
-Z0 = 50555571.170
+#X = 3664940.500
+#Y = 1409153.590
+#Z = 5009571.170
+#X0 = 36655540.500
+#Y0 = 14555153.590
+#Z0 = 50555571.170
+
 # TEST
-obiekt = Transformacje(model = "grs80")
+#obiekt = Transformacje(model = "grs80")
 
-d11, d1 = obiekt.odleglosc_2D(A, B)
-print(d1)
-
-fi, lam, h = obiekt.hirvonen(X,Y,Z)
-X1, Y1, Z1 = obiekt.geodezyjne2XYZ(fi, lam, h)
-print(X1,Y1,Z1)
+#d11, d1 = obiekt.odleglosc_2D_3D(A, B)
 
 
-X0, Y0 = obiekt.u2000(fi, lam)
-print(X0,Y0)
+#fi, lam, h = obiekt.hirvonen(X,Y,Z)
+#X1, Y1, Z1 = obiekt.geodezyjne2XYZ(fi, lam, h)
 
-neu, n,e,u = obiekt.neu(X, Y, Z, X0, Y0, Z0)
-print(neu)
 
-azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
-print(math.degrees(azymut),math.degrees(elewacja))
+
+#X0, Y0 = obiekt.u2000(fi, lam)
+
+
+#neu, n,e,u = obiekt.neu(X, Y, Z, X0, Y0, Z0)
+
+
+#azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
