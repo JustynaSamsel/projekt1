@@ -219,7 +219,7 @@ class Transformacje:
         return x92, y92 
     
     
-    # 6) kat azymutu i kat elewacji
+    # 6) kat azymutu i kat elewacji(pion))
     def azymut_elewacja(self, X0, Y0, Z0, X, Y, Z):
         """
         Funkcja wyznacza kąt azymutu oraz kąt elewacji.
@@ -252,7 +252,7 @@ class Transformacje:
     
     
     # 7) odleglosc 2D i 3D
-    def odleglosc_2D_3D(self, A,B):
+    def odleglosc_2D_3D(self, A,B,C,A1,B1,C1):
         """
         Funkcja wyznacza odległość 2D oraz 3D.
         
@@ -264,9 +264,9 @@ class Transformacje:
             d_2D :[float] : odległość 2D [metry]
             d_3D :[float] : odległość 3D [metry]
         """
-        dX = A[0] - B[0]
-        dY = A[1] - B[1]
-        dZ = A[2] - B[2]
+        dX = A - A1
+        dY = B - B1
+        dZ = C - C1
         
         d_2D = sqrt((dX**2) + (dY**2))
         #print('Odleglosc 2D =', d_2D)
