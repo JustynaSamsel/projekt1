@@ -67,10 +67,11 @@ while True:
     opcja = input()
 
     if  opcja == "1":
-        print('Szerokosc geodezyjna | Dlugosc geodezyjna | Wysokosc na elipsoidzie')
+        print('Szerokość geodezyjna | Długość geodezyjna | Wysokość na elipsoidzie')
         for ix in range(w):
             fi_lam_h[ix] = elipsoida_grs80.hirvonen(tablica[ix,0], tablica[ix,1], tablica[ix,2])
             print(f'{fi_lam_h[ix][0]} | {fi_lam_h[ix][1]} | {fi_lam_h[ix][2]}')
+            
             
     elif  opcja == "2":
         print('X | Y | Z')
@@ -78,11 +79,13 @@ while True:
             XYZ[ix] = elipsoida_grs80.geodezyjne2XYZ(fi_lam_h[ix,0], fi_lam_h[ix,1], fi_lam_h[ix,2])
             print(f'{ XYZ[ix][0] } |{ XYZ[ix][1] }|{ XYZ[ix][2] }')
     
+    
     elif  opcja == "3":
         print('N | E | U')
         for ix in range(w):
             n_e_u[ix] = elipsoida_grs80.neu(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix,0]+1, tablica[ix,1]+1, tablica[ix,2]+1)
             print(f'{ n_e_u[ix][0] }|{ n_e_u[ix][1] }|{ n_e_u[ix][2] }')
+            
             
             
     elif  opcja == "4":
@@ -97,11 +100,13 @@ while True:
             XY_92[ix] = elipsoida_grs80.u1992(fi_lam_h[ix,0], fi_lam_h[ix,1])
             print(f'{ XY_92[ix][0] }|{ XY_92[ix][1] }')
             
+            
     elif  opcja == "6":
         print('Azymut | Kąt elewacji')
         for ix in range(w-1):
             azymut_elewacja[ix] = elipsoida_grs80.azymut_elewacja(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix+1,0], tablica[ix+1,1], tablica[ix+1,2])
             print(f'{ azymut_elewacja[ix][0] }|{ azymut_elewacja[ix][1] }')
+    
     
     elif  opcja == "7":
         print('Odległość 2D | Odległość 3D')
