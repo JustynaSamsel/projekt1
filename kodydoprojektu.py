@@ -280,31 +280,3 @@ class Transformacje:
 
 
 
-#A = [ 34, 432,42]
-#B = [378,239,313]
-
-#X = 3664940.500
-#Y = 1409153.590
-#Z = 5009571.170
-#X0 = 36655540.500
-#Y0 = 14555153.590
-#Z0 = 50555571.170
-
-# TEST
-#obiekt = Transformacje(model = "grs80")
-
-#d11, d1 = obiekt.odleglosc_2D_3D(A, B)
-
-
-#fi, lam, h = obiekt.hirvonen(X,Y,Z)
-#X1, Y1, Z1 = obiekt.geodezyjne2XYZ(fi, lam, h)
-
-
-
-#X0, Y0 = obiekt.u2000(fi, lam)
-
-
-#neu, n,e,u = obiekt.neu(X, Y, Z, X0, Y0, Z0)
-
-
-#azymut, elewacja = obiekt.azymut_elewacja(X0, Y0, Z0, X, Y, Z)
