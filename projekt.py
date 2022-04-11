@@ -51,6 +51,9 @@ for ix in range(w-1):
 
 
 
+
+
+
 ### Panel dla uzytkownika
 
 print("Wybierz jedną z poniższych opcji:")
@@ -63,6 +66,7 @@ while True:
     print("5 | Transformacja współrzędnych geodezyjnych do układu płaskiego 1992")
     print("6 | Wyznaczenie kąta azymutu i kąta elewacji")
     print("7 | Wyznaczenie odległości 2D oraz 3D")
+    print("8 | Zakończ")
 
     opcja = input()
 
@@ -113,9 +117,12 @@ while True:
         for ix in range(w-1):
             odleglosc_2D_3D[ix] = elipsoida_grs80.odleglosc_2D_3D(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix+1,0], tablica[ix+1,1], tablica[ix+1,2])
             print(f'{ odleglosc_2D_3D[ix][0] }|{ odleglosc_2D_3D[ix][1] }')
-
+    
+    elif opcja =="8":
+        break
     else:
-        print("\nWybrana opcja nie jest dostępna\n")              
+        print("\nWybrana opcja nie jest dostępna\n")   
+                  
 
 
 
