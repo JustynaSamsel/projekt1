@@ -15,7 +15,7 @@ from kodydoprojektu import *
 elipsoida_grs80 = Transformacje(model = "grs80")
 
 # nazwa pliku do odczytu
-plik = "wsp_inp.txt"
+plik = "wsp.inp.txt"
 
 # odczyt danych z pliku
 tablica = np.genfromtxt(plik, delimiter=",", skip_header = 4)  # pomijam 4 pierwsze linie
