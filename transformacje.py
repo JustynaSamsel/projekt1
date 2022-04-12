@@ -244,7 +244,7 @@ class Transformacje:
         n,e,u = self.neu(X0, Y0, Z0, X, Y, Z)
         
         hz = math.sqrt(e**2 + n**2)  # odleglosc horyzontalna
-        el = math.sqrt(e**2 + n**2 + u**2)  # dlugosc wektora
+        #el = math.sqrt(e**2 + n**2 + u**2)  # dlugosc wektora
         azymut = math.atan2(e,n)
         elewacja = math.atan2(u,hz)
         
