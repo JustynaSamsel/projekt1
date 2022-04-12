@@ -32,7 +32,9 @@ azymut_elewacja = np.zeros((11, 2))
 odleglosc_2D_3D = np.zeros((11, 2))
 
 # wyniki: (fi,lam,h), [x00, y00], [x92,y92] ---> 7 kolumn
-tablica_wynikow = np.zeros((w, 7))
+# wyniki: (n_e_u), (az_el), (odleglosc_2D_2D) ---> 7 kolumn 
+tablica_wynikow = np.zeros((w, 10))
+tablica_wynikow1 = np.zeros((w,4))
 
 
 for ix in range(w):
@@ -42,13 +44,14 @@ for ix in range(w):
     XY_00[ix] = elipsoida_grs80.u2000(fi_lam_h[ix,0], fi_lam_h[ix,1])
     XY_92[ix] = elipsoida_grs80.u1992(fi_lam_h[ix,0], fi_lam_h[ix,1])
     n_e_u[ix] = elipsoida_grs80.neu(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix,0]+1, tablica[ix,1]+1, tablica[ix,2]+1)
-    tablica_wynikow[ix] = np.hstack([fi_lam_h[ix], XY_00[ix], XY_92[ix]])
-# hstack --> automatyczne dopasowowywanie kolumn
- 
+    
+    tablica_wynikow[ix] = np.hstack([fi_lam_h[ix], XY_00[ix], XY_92[ix], n_e_u[ix]])
+    # hstack --> automatyczne dopasowowywanie kolumn
 for ix in range(w-1):
     odleglosc_2D_3D[ix] = elipsoida_grs80.odleglosc_2D_3D(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix+1,0], tablica[ix+1,1], tablica[ix+1,2])
     azymut_elewacja[ix] = elipsoida_grs80.azymut_elewacja(tablica[ix,0], tablica[ix,1], tablica[ix,2], tablica[ix+1,0], tablica[ix+1,1], tablica[ix+1,2])  
-
+        
+    tablica_wynikow1[ix] = np.hstack([odleglosc_2D_3D[ix], azymut_elewacja[ix]])
 
 
 
@@ -126,4 +129,5 @@ while True:
 
 
 
-np.savetxt("wspolrzedne.txt", tablica_wynikow, delimiter=',', fmt = ['%12.6f','%14.6f','%15.6f','%15.3f','%15.3f','%15.3f','%15.3f'])
+np.savetxt("wspolrzedne.txt", tablica_wynikow, delimiter=',', fmt = ['%12.7f','%14.7f','%15.3f','%15.3f','%15.3f','%15.3f','%15.3f','%15.3f','%15.3f','%15.3f'])
+np.savetxt("odleglosci.katy.txt", tablica_wynikow1, delimiter=',', fmt = ['%13.6f','%13.6f','%13.6f','%13.6f'])
