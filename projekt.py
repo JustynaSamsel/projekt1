@@ -31,8 +31,8 @@ n_e_u = np.zeros((w,k))
 azymut_elewacja = np.zeros((11, 2))
 odleglosc_2D_3D = np.zeros((11, 2))
 
-# wyniki: (fi,lam,h), [x00, y00], [x92,y92] ---> 7 kolumn
-# wyniki: (n_e_u), (az_el), (odleglosc_2D_2D) ---> 7 kolumn 
+# wyniki: (fi,lam,h), [x00, y00], [x92,y92], (n_e_u)---> 10 kolumn
+# wyniki:  (az_el), (odleglosc_2D_2D) ---> 4 kolumn 
 tablica_wynikow = np.zeros((w, 10))
 tablica_wynikow1 = np.zeros((w,4))
 
